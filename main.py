@@ -1,6 +1,7 @@
 #Python
 from turtle import title
 from typing import Optional
+from unittest import result
 
 #Pydantic
 from pydantic import BaseModel
@@ -9,6 +10,11 @@ from pydantic import BaseModel
 from fastapi import FastAPI, Path, Query, Body
 
 app = FastAPI()
+
+class Location(BaseModel):
+    city: str
+    state: str
+    country: str
 
 class Person(BaseModel):
     first_name: str
@@ -56,3 +62,20 @@ def show_person(
                         )
                 ):
     return {person_id: "It exists!"}
+
+# Validaciones Request Body
+@app.put("/person/{person_id}")
+def update_person(
+                    person_id: int = Path(
+                        ...,
+                        title="Person ID",
+                        description="This is the Person ID",
+                        gt=0
+                    ),
+                    person: Person = Body(...),
+                    location: Location = Body(...)
+                ):
+    results = person.dict()
+    results.update(location.dict())
+    return results
+
