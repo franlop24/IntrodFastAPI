@@ -24,17 +24,20 @@ class Location(BaseModel):
     city: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Huamantla"
     )
     state: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Tlaxcala"
     ) 
     country: str = Field(
         ...,
         min_length=1,
-        max_length=40
+        max_length=40,
+        example="Mexico"
     )
 
 class Person(BaseModel):
@@ -58,6 +61,18 @@ class Person(BaseModel):
     email: EmailStr = Field(...)
     web: Optional[HttpUrl] = Field(default=None)
     payment_card: Optional[PaymentCardNumber] = Field(default=None)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "first_name": "Francisco",
+                "last_name": "Lopez Briones",
+                "age": 38,
+                "hair_color": "black",
+                "is_married": False,
+                "email": "franlopbri@gmail.com"
+            }
+        }
 
 @app.get("/")
 def home():
