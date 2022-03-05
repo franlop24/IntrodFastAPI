@@ -7,7 +7,7 @@ from pydantic import BaseModel, EmailStr, HttpUrl, PaymentCardNumber
 from pydantic import Field
 
 #FastAPI
-from fastapi import FastAPI, Path, Query, Body, status
+from fastapi import FastAPI, Form, Path, Query, Body, status
 
 app = FastAPI()
 
@@ -76,6 +76,9 @@ class Person(BaseModel):
     #         }
     #     }
 
+class LoginOut(BaseModel):
+    username: str = Field(..., max_length=20, example="Paco2022")
+
 @app.get(path="/", status_code=status.HTTP_200_OK)
 def home():
     return {"Hello": "World"}
@@ -140,3 +143,10 @@ def update_person(
     results.update(location.dict())
     return results
 
+@app.post(
+        path="/login",
+        response_model=LoginOut,
+        status_code=status.HTTP_200_OK
+    )
+def login(username: str = Form(...), password: str = Form(...)):
+    return LoginOut(username=username)
