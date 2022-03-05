@@ -40,7 +40,7 @@ class Location(BaseModel):
         example="Mexico"
     )
 
-class PersonBase(BaseModel):
+class Person(BaseModel):
     first_name: str = Field(
             ...,
             min_length=1,
@@ -60,33 +60,31 @@ class PersonBase(BaseModel):
     is_married: Optional[bool] = Field(default=None)
     email: EmailStr = Field(...)
     web: Optional[HttpUrl] = Field(default=None)
-    #payment_card: Optional[PaymentCardNumber] = Field(default=None)    
-
-class Person(PersonBase):
     password: str = Field(..., min_length=8)
+    #payment_card: Optional[PaymentCardNumber] = Field(default=None)  
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "first_name": "Francisco",
-                "last_name": "Lopez Briones",
-                "age": 38,
-                "hair_color": "black",
-                "is_married": False,
-                "email": "franlopbri@gmail.com",
-                "password": "password"
-            }
-        }
-
-class PersonOut(PersonBase):
-    pass
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "first_name": "Francisco",
+    #             "last_name": "Lopez Briones",
+    #             "age": 38,
+    #             "hair_color": "black",
+    #             "is_married": False,
+    #             "email": "franlopbri@gmail.com",
+    #             "password": "password"
+    #         }
+    #     }
 
 @app.get("/")
 def home():
     return {"Hello": "World"}
 
 # Request and Response Body
-@app.post("/person/new", response_model=PersonOut)
+@app.post("/person/new", 
+            response_model=Person,
+            response_model_exclude={"password"}
+            )
 def create_person(person: Person = Body(...)):
     return person
 
